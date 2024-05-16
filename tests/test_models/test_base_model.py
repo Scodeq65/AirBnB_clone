@@ -58,6 +58,15 @@ class TestBaseModel(unittest.TestCase):
         self.assertIsInstance(model_dict["created_at"], str)
         self.assertIsInstance(model_dict["updated_at"], str)
 
+    def test_init_from_dict(self):
+        """Test instantiation from dictionary."""
+        model_dict = self.model.to_dict()
+        new_model = BaseModel(**model_dict)
+        self.assertEqual(new_model.id, self.model.id)
+        self.assertEqual(new_model.created_at, self.model.created_at)
+        self.assertEqual(new_model.updated_at, self.model.updated_at)
+        self.assertEqual(new_model.to_dict(), self.model.to_dict())
+
 
 if __name__ == '__main__':
     unittest.main()
