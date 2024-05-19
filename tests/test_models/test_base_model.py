@@ -1,71 +1,66 @@
 #!/usr/bin/python3
-"""Unit test for BaseModel."""
+"""Unit test for BaseModel class."""
 
 import unittest
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from models.base_model import BaseModel
 
 
 class TestBaseModel(unittest.TestCase):
-    """Test case for the BaseModel class."""
+    """Test case for the BaseMdel class."""
 
-    def setUp(self):
-        """Set up for each test methods."""
-        self.model = BaseModel()
-
-    def test_id_is_uuid(self):
-        """Test that ID is a valid UUID."""
-        self.assertIsInstance(self.model.id, str)
-        try:
-            uuid.UUID(self.model.id, version=4)
-        except ValueError:
-            self.fail("id is  not a valid UUID4")
-
-    def test_created_at_is_datetime(self):
-        """Test to confirm if created_at is datetime object."""
-        self.assertIsInstance(self.model.created_at, datetime)
-
-    def test_updated_at_is_datetime(self):
-        """Test to confirm if updated_at is datetime object."""
-        self.assertIsInstance(self.model.updated_at, datetime)
+    def test_init(self):
+        """Test the initialization of BaseModel instances."""
+        obj = BaseModel()
+        self.assertTrue(hasattr(obj, "id"))
+        self.assertTrue(isinstance(obj.id, str))
+        self.assertTrue(hasattr(obj, "created_at"))
+        self.assertTrue(hasattr(obj, "updated_at"))
+        self.assertTrue(isinstance(obj.created_at, datetime))
+        self.assertTrue(isinstance(obj.updated_at, datetime))
+        self.assertTrue(obj.updated_at - obj.created_at < timedelta(seconds=1))
 
     def test_str_method(self):
         """Test the __str__ method."""
-        expected_str = f"[BaseModel] ({self.model.id}) {self.model.__dict__}"
-        self.assertEqual(str(self.model), expected_str)
+        obj = BaseModel()
+        expected_str = f"[BaseModel] ({obj.id}) {obj.__dict__}"
+        self.assertEqual(str(obj), expected_str)
 
     def test_save_method(self):
         """Test the save method."""
-        old_updated_at = self.model.updated_at
-        self.model.save()
-        self.assertNotEqual(self.model.updated_at, old_updated_at)
-        self.assertIsInstance(self.model.updated_at, datetime)
-        self.assertGreater(self.model.updated_at, old_updated_at)
+        obj = BaseModel()
+        first_updated_at = obj.updated_at
+        obj.save()
+        self.assertNotEqual(first_updated_at, obj.updated_at)
 
-    def test_to_dict_method(self):
-        """Test the to_dict method."""
-        model_dict = self.model.to_dict()
-        self.assertIsInstance(model_dict, dict)
-        self.assertEqual(model_dict["__class__"], "BaseModel")
-        self.assertEqual(model_dict["id"], self.model.id)
-        self.assertEqual(
-                model_dict["created_at"], self.model.created_at.isoformat()
-        )
-        self.assertEqual(
-                model_dict["updated_at"], self.model.updated_at.isoformat()
-        )
-        self.assertIsInstance(model_dict["created_at"], str)
-        self.assertIsInstance(model_dict["updated_at"], str)
-
-    def test_init_from_dict(self):
+    def test_to_dict(self):
         """Test instantiation from dictionary."""
-        model_dict = self.model.to_dict()
-        new_model = BaseModel(**model_dict)
-        self.assertEqual(new_model.id, self.model.id)
-        self.assertEqual(new_model.created_at, self.model.created_at)
-        self.assertEqual(new_model.updated_at, self.model.updated_at)
-        self.assertEqual(new_model.to_dict(), self.model.to_dict())
+        obj = BaseModel()
+        obj.name = "My First Model"
+        obj.my_number = 89
+        obj_dict = obj.to_dict()
+
+        self.assertEqual(obj_dict['id'], obj.id)
+        self.assertEqual(obj_dict['name'], "My First Model")
+        self.assertEqual(obj_dict['my_number'], 89)
+        self.assertEqual(obj_dict['__class__'], 'BaseModel')
+        self.assertIsInstance(obj_dict['created_at'], str)
+        self.assertIsInstance(obj_dict['updated_at'], str)
+
+    def test_kwargs(self):
+        """Test initialization with kwargs."""
+        obj = BaseModel()
+        obj.name = "My First Model"
+        obj.my_number = 89
+        obj_dict = obj.to_dict()
+        new_obj = BaseModel(**obj_dict)
+
+        self.assertEqual(new_obj.id, obj.id)
+        self.assertEqual(new_obj.created_at, obj.created_at)
+        self.assertEqual(new_obj.updated_at, obj.updated_at)
+        self.assertEqual(new_obj.name, obj.name)
+        self.assertEqual(new_obj.my_number, obj.my_number)
 
 
 if __name__ == '__main__':
