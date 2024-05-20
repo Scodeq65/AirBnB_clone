@@ -2,7 +2,6 @@
 """Unit test for BaseModel class."""
 
 import unittest
-import uuid
 from datetime import datetime, timedelta
 from models.base_model import BaseModel
 

@@ -5,7 +5,6 @@
 
 import uuid
 from datetime import datetime
-from models import storage
 
 
 class BaseModel:
@@ -19,6 +18,7 @@ class BaseModel:
 
     def __init__(self, *args, **kwargs):
         """Initializes a new instance of BaseModel."""
+        from models import storage
         if kwargs:
             for key, value in kwargs.items():
                 if key in ("created_at", "updated_at"):
@@ -43,6 +43,7 @@ class BaseModel:
         """Updates the public instance attr updated_at
             with the current datetime.
         """
+        from models import storage
         self.updated_at = datetime.now()
         storage.save()
 
