@@ -21,5 +21,6 @@ class TestState(unittest.TestCase):
         """Test that State is a subclass of BaseModel."""
         self.assertIsInstance(self.state, State)
 
+
 if __name__ == "__main__":
     unittest.main()

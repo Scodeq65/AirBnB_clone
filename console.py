@@ -3,6 +3,11 @@
 This module defines the entry point of the command interpreter.
 """
 
+from models.place import Place
+from models.state import State
+from models.review import Review
+from models.amenity import Amenity
+from models.city import City
 from models import storage
 from models.base_model import BaseModel
 import cmd
@@ -18,6 +23,11 @@ class HBNBCommand(cmd.Cmd):
     classes = {
             'BaseModel': BaseModel,
             'User': User,
+            'Place': Place,
+            'State': State,
+            'City': City,
+            'Amenity': Amenity,
+            'Review': Review
     }
 
     def do_quit(self, arg):
@@ -78,7 +88,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
             return
         if args[0] not in self.classes:
-            print("** calss doesn't exist **")
+            print("** class doesn't exist **")
             return
         if len(args) < 2:
             print("** instance id missing **")

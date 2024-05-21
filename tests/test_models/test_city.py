@@ -23,5 +23,6 @@ class TestCity(unittest.TestCase):
         """Test that City is a subclass of BaseModel."""
         self.assertIsInstance(self.city, City)
 
+
 if __name__ == "__main__":
     unittest.main()

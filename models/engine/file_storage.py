@@ -21,7 +21,8 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
-    classes = {
+    def __init__(self):
+        self.classes = {
             'BaseModel': BaseModel,
             'User': User,
             'State': State,
@@ -29,7 +30,7 @@ class FileStorage:
             'Amenity': Amenity,
             'Place': Place,
             'Review': Review
-    }
+        }
 
     def all(self):
         """Returns d dictionary __objects."""

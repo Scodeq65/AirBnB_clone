@@ -3,9 +3,13 @@
 
 import unittest
 import os
-import json
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 from models.engine.file_storage import FileStorage
-from models.base_model import BaseModel
 
 
 class TestFileStorage(unittest.TestCase):
@@ -13,45 +17,64 @@ class TestFileStorage(unittest.TestCase):
 
     def setUp(self):
         """Set up for tests."""
+        self.file_path = "file.json"
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
         self.storage = FileStorage()
-        self.storage._FileStorage__file_path = "test_file.json"
-        self.storage._FileStorage__objects = {}
 
     def tearDown(self):
         """Clean up after tests."""
-        if os.path.exists("test_file.json"):
-            os.remove("test_file.json")
-
-    def test_all(self):
-        """Test the all method."""
-        self.assertEqual(self.storage.all(), {})
+        if os.path.exists(self.file_path):
+            os.remove(self.file_path)
 
     def test_new(self):
         """Test the new method."""
-        obj = BaseModel()
-        self.storage.new(obj)
-        key = f"BaseModel.{obj.id}"
-        self.assertIn(key, self.storage.all())
+        user = User()
+        place = Place()
+        state = State()
+        city = City()
+        amenity = Amenity()
+        review = Review()
 
-    def test_save(self):
+        self.storage.new(user)
+        self.storage.new(place)
+        self.storage.new(state)
+        self.storage.new(city)
+        self.storage.new(amenity)
+        self.storage.new(review)
+
+        self.assertTrue("User." + user.id in self.storage.all())
+        self.assertTrue("Place." + place.id in self.storage.all())
+        self.assertTrue("State." + state.id in self.storage.all())
+        self.assertTrue("City." + city.id in self.storage.all())
+        self.assertTrue("Amenity." + amenity.id in self.storage.all())
+        self.assertTrue("Review." + review.id in self.storage.all())
+
+    def test_save_reload(self):
         """Test the save method."""
-        obj = BaseModel()
-        self.storage.new(obj)
-        self.storage.save()
-        with open("test_file.json", "r") as file:
-            data = json.load(file)
-        key = f"BaseModel.{obj.id}"
-        self.assertIn(key, data)
+        user = User()
+        place = Place()
+        state = State()
+        city = City()
+        amenity = Amenity()
+        review = Review()
 
-    def test_reload(self):
-        """Test the reload method."""
-        obj = BaseModel()
-        self.storage.new(obj)
+        self.storage.new(user)
+        self.storage.new(place)
+        self.storage.new(state)
+        self.storage.new(city)
+        self.storage.new(amenity)
+        self.storage.new(review)
+
         self.storage.save()
-        self.storage._FileStorage__objects = {}
         self.storage.reload()
-        key = f"BaseModel.{obj.id}"
-        self.assertIn(key, self.storage.all())
+
+        self.assertTrue("User." + user.id in self.storage.all())
+        self.assertTrue("Place." + place.id in self.storage.all())
+        self.assertTrue("State." + state.id in self.storage.all())
+        self.assertTrue("City." + city.id in self.storage.all())
+        self.assertTrue("Amenity." + amenity.id in self.storage.all())
+        self.assertTrue("Review." + review.id in self.storage.all())
 
 
 if __name__ == '__main__':
