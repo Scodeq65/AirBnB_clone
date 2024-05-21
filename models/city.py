@@ -3,7 +3,6 @@
 
 from models.base_model import BaseModel
 
-
 class City(BaseModel):
     """Initialize city mothod."""
     state_id = ""

@@ -3,7 +3,6 @@
 
 from models.base_model import BaseModel
 
-
 class Place(BaseModel):
     """Initialize place mothod."""
     city_id = ""

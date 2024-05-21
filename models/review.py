@@ -3,8 +3,7 @@
 
 from models.base_model import BaseModel
 
-
-class Review(Basemodel):
+class Review(BaseModel):
     """Initialize review method."""
     place_id = ""
     user_id = ""
