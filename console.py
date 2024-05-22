@@ -158,14 +158,22 @@ class HBNBCommand(cmd.Cmd):
         args = line.split('.')
         if len(args) == 2:
             class_name = args[0]
-            if args[1] == "all()":
+            method_and_arg = args[1]
+            if method_and_arg == "all()":
                 if class_name in self.classes:
                     self.do_all(class_name)
                 else:
                     print("** class doesn't exist **")
                 return
-            elif args[1] == "count()":
+            elif method_and_arg == "count()":
                 self.do_count(class_name)
+                return
+            elif method_and_arg.startswith("show(") and method_and_arg.endswith(")"):
+                instance_id = method_and_arg[5:-1]
+                if class_name in self.classes:
+                    self.do_show(f"{class_name} {instance_id}")
+                else:
+                    print("** class doesn't exist **")
                 return
         return super().onecmd(line)
 
