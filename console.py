@@ -162,8 +162,10 @@ class HBNBCommand(cmd.Cmd):
     def do_count(self, class_name):
         """Get the number of instances of a class."""
         if class_name in self.classes:
-            count = sum(1 for obj in storage.all().values()
-                    if type(obj).__name__ == class_name)
+            count = sum(
+                    1 for obj in storage.all().values()
+                    if type(obj).__name__ == class_name
+            )
             print(count)
         else:
             print("** class doesn't exist **")
@@ -183,29 +185,37 @@ class HBNBCommand(cmd.Cmd):
             elif method_and_arg == "count()":
                 self.do_count(class_name)
                 return
-            elif method_and_arg.startswith("show(") and method_and_arg.endswith(")"):
+            elif (method_and_arg.startswith("show(") and
+                    method_and_arg.endswith(")")):
                 instance_id = method_and_arg[5:-1]
                 if class_name in self.classes:
                     self.do_show(f"{class_name} {instance_id}")
                 else:
                     print("** class doesn't exist **")
                 return
-            elif method_and_arg.startswith("destroy(") and method_and_arg.endswith(")"):
+            elif (method_and_arg.startswith("destroy(") and
+                    method_and_arg.endswith(")")):
                 instance_id = method_and_arg[8:-1]
                 if class_name in self.classes:
                     self.do_destroy(f"{class_name} {instance_id}")
                 else:
                     print("** class doesn't exist **")
                 return
-            elif method_and_arg.startswith("update(") and method_and_arg.endswith(")"):
+            elif (method_and_arg.startswith("update(") and
+                    method_and_arg.endswith(")")):
                 update_args = method_and_arg[7:-1].split(',', 1)
                 if len(update_args) == 2:
                     instance_id = update_args[0].strip()
                     try:
-                        data = json.loads(update_args[1].strip().replace("'",'"'))
+                        data = json.loads(
+                                update_args[1].strip().replace("'", '"')
+                        )
                         if isinstance(data, dict):
                             if class_name in self.classes:
-                                self.do_update(f"{class_name} {instance_id} {json.dumps(data)}")
+                                self.do_update(
+                                        f"{class_name} {instance_id} "
+                                        f"{json.dumps(data)}"
+                                )
                             else:
                                 print("** class doesn't exist **")
                             return
@@ -215,9 +225,14 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     update_args = method_and_arg[7:-1].split(',', 2)
                     if len(update_args) == 3:
-                        instance_id, attr_name, attr_value = map(str.strip, update_args)
+                        instance_id, attr_name, attr_value = map(
+                                str.strip, update_args
+                        )
                         if class_name in self.classes:
-                            self.do_update(f"{class_name} {instance_id} {attr_name} {attr_value}")
+                            self.do_update(
+                                    f"{class_name} {instance_id} {attr_name} "
+                                    f"{attr_value}"
+                            )
                         else:
                             print("** class doesn't exist **")
                         return
