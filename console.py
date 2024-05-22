@@ -175,6 +175,13 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** class doesn't exist **")
                 return
+            elif method_and_arg.startswith("destroy(") and method_and_arg.endswith(")"):
+                instance_id = method_and_arg[8:-1]
+                if class_name in self.classes:
+                    self.do_destroy(f"{class_name} {instance_id}")
+                else:
+                    print("** class doesn't exist **")
+                return
         return super().onecmd(line)
 
 
