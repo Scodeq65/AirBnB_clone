@@ -144,16 +144,28 @@ class HBNBCommand(cmd.Cmd):
         setattr(obj, args[2], args[3])
         obj.save()
 
+    def do_count(self, class_name):
+        """Get the number of instances of a class."""
+        if class_name in self.classes:
+            count = sum(1 for obj in storage.all().values()
+                    if type(obj).__name__ == class_name)
+            print(count)
+        else:
+            print("** class doesn't exist **")
+
     def onecmd(self, line):
         """Override onecmd to handle <class name>.all() syntax."""
         args = line.split('.')
-        if len(args) == 2 and args[1] == "all()":
+        if len(args) == 2:
             class_name = args[0]
-            if class_name in self.classes:
-                self.do_all(class_name)
+            if args[1] == "all()":
+                if class_name in self.classes:
+                    self.do_all(class_name)
+                else:
+                    print("** class doesn't exist **")
                 return
-            else:
-                print("** class doesn't exist **")
+            elif args[1] == "count()":
+                self.do_count(class_name)
                 return
         return super().onecmd(line)
 
