@@ -144,6 +144,19 @@ class HBNBCommand(cmd.Cmd):
         setattr(obj, args[2], args[3])
         obj.save()
 
+    def onecmd(self, line):
+        """Override onecmd to handle <class name>.all() syntax."""
+        args = line.split('.')
+        if len(args) == 2 and args[1] == "all()":
+            class_name = args[0]
+            if class_name in self.classes:
+                self.do_all(class_name)
+                return
+            else:
+                print("** class doesn't exist **")
+                return
+        return super().onecmd(line)
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
