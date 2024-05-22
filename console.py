@@ -182,6 +182,17 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** class doesn't exist **")
                 return
+            elif method_and_arg.startswith("update(") and method_and_arg.endswith(")"):
+                update_args = method_and_arg[7:-1].split(',')
+                if len(update_args) != 3:
+                    print("** instance id missing **")
+                    return
+                instance_id, attribute_name, attribute_value = map(str.strip, update_args)
+                if class_name in self.classes:
+                    self.do_update(f"{class_name} {instance_id} {attribute_name} {attribute_value}")
+                else:
+                    print("** class doesn't exist **")
+                return
         return super().onecmd(line)
 
 
