@@ -13,6 +13,7 @@ from models.base_model import BaseModel
 import cmd
 from models.user import User
 import shlex
+import json
 
 
 class HBNBCommand(cmd.Cmd):
@@ -134,13 +135,27 @@ class HBNBCommand(cmd.Cmd):
         if key not in storage.all():
             print("** no instance found **")
             return
+        obj = storage.all()[key]
+
+        if len(args) == 3:
+            try:
+                data = json.loads(args[2].replace("'", '"'))
+                if isinstance(data, dict):
+                    for attr, value in data.items():
+                        setattr(obj, attr, value)
+                    obj.save()
+                    return
+            except json.JSONDecodeError:
+                pass
+            print("** invalid Dict rep **")
+            return
+
         if len(args) < 3:
             print("** attribute name missing **")
             return
         if len(args) < 4:
             print("** value missing **")
             return
-        obj = storage.all()[key]
         setattr(obj, args[2], args[3])
         obj.save()
 
@@ -183,15 +198,30 @@ class HBNBCommand(cmd.Cmd):
                     print("** class doesn't exist **")
                 return
             elif method_and_arg.startswith("update(") and method_and_arg.endswith(")"):
-                update_args = method_and_arg[7:-1].split(',')
-                if len(update_args) != 3:
-                    print("** instance id missing **")
-                    return
-                instance_id, attribute_name, attribute_value = map(str.strip, update_args)
-                if class_name in self.classes:
-                    self.do_update(f"{class_name} {instance_id} {attribute_name} {attribute_value}")
+                update_args = method_and_arg[7:-1].split(',', 1)
+                if len(update_args) == 2:
+                    instance_id = update_args[0].strip()
+                    try:
+                        data = json.loads(update_args[1].strip().replace("'",'"'))
+                        if isinstance(data, dict):
+                            if class_name in self.classes:
+                                self.do_update(f"{class_name} {instance_id} {json.dumps(data)}")
+                            else:
+                                print("** class doesn't exist **")
+                            return
+                    except json.JSONDecodeError:
+                        print("** invalid dictionary representation **")
+                        return
                 else:
-                    print("** class doesn't exist **")
+                    update_args = method_and_arg[7:-1].split(',', 2)
+                    if len(update_args) == 3:
+                        instance_id, attr_name, attr_value = map(str.strip, update_args)
+                        if class_name in self.classes:
+                            self.do_update(f"{class_name} {instance_id} {attr_name} {attr_value}")
+                        else:
+                            print("** class doesn't exist **")
+                        return
+                print("** invalid arguments **")
                 return
         return super().onecmd(line)
 
