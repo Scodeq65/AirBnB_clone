@@ -1,6 +1,10 @@
 header {
-	color: white;
+	background-color: white;
 	height: 70px;
-	display: flex;
-	align-items: center;
+	background-image: url("../images/logop.png");
+	border-bottom: 1px solid #CCCCCC;
+	background-repeat: no-repeat;
+	background-position-x: 20px;
+	background-position-y: center;
+
 }
